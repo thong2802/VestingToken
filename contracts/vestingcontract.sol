@@ -12,13 +12,36 @@ contract Tokenvesting is Ownable{
     struct User {
         uint amount;
         uint tokenCanClaimed;
-        bool firstClaim;
-        uint256 firstJoin;
     }
+
     // mapping user info by address
     mapping(address => User) public userInfo;
     mapping(address => bool) whiteListUsers; // this is private
-   
+
+    ERC20 public token;
+    uint256 public firstRelease;
+    uint256 public startTime;
+    uint256 public totalPeriods;
+    uint256 public timePerPeriods;
+    uint256 public cliff;
+    uint256 public totalTokens;
+
+    constructor(address _token,
+                uint256 _firstRelease,
+                uint256 _startTime,
+                uint256 _totalPeriods,
+                uint256 _timePerPeriods,
+                uint256 _cliff,
+                uint256 _totalTokens 
+    ) {
+        token = ERC20(_token);
+        firstRelease = _firstRelease;
+        startTime = _startTime;
+        totalPeriods = _totalPeriods;
+        timePerPeriods = _timePerPeriods;
+        cliff = _cliff;
+        totalTokens = _totalTokens;
+    }
    // even 
     
    // modifier
@@ -27,9 +50,9 @@ contract Tokenvesting is Ownable{
         _;
     }
 
-    function addToWhiteList(address[] users) public onlyOwner {
-        for (int i = 0; i < users.length; i++) {
-            whiteListUsers[users[i]] = true;
+    function addToWhiteList(address[] memory user) public onlyOwner {
+        for (int i = 0; i < user.length; i++) {
+            whiteListUsers[user[i]] = true;
         }
     }
     function doSomething() public onlyWhiteListed() {
