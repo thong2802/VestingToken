@@ -78,12 +78,25 @@ contract MyVesting is ERC20, Ownable {
         uint256 countYear  = (block.timestamp - startTime) / 10;
         uint256 countMonth = (block.timestamp - startTime) % 10;
         address _sender = msg.sender;
+        uint256 time = block.timestamp;
+        uint256 tokenClaimable = 0;
+
         User storage user = listUserVesting[_sender];
         require(listUserVesting[msg.sender].amount > 0, "User not have in whitelist");
         if(totalToken > 0) {
             require(token.balanceOf(address(this)) >= user.tokenCanClaim, "Not enough fund to claim");
-
         }
+        uint256 tokenClaimPerPeriod = buyerInfo[msg.sender].amount * 80 / 100 / totalPeriods;
+        if(time < firstRelease + cliff){
+                        tokenClaimable = buyerInfo[msg.sender].amount * 20 / 100;
+            transfer(msg.sender,tokenClaimable);
+            buyerInfo[msg.sender].tokenClaimed = tokenClaimable;
+        } else {
+            tokenClaimable += tokenClaimPerPeriod*((time-startTime)/timePerPeriods);
+            startTime = startTime + ((time-startTime)/timePerPeriods) * timePerPeriods;
+            totalPeriods = totalPeriods - ((time-startTime)/timePerPeriods);
+            transfer(msg.sender,tokenClaimable);
+            buyerInfo[msg.sender].tokenClaimed += tokenClaimable;
     }
 }
 
