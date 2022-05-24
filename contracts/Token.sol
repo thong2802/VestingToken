@@ -11,12 +11,4 @@ contract QKCToken is ERC20, Ownable {
     constructor(uint totalSuply) ERC20("EvonDev", "EVD") {
         _mint(msg.sender, totalSuply * 10**18); //1000000000000000000
     }
-
-    function claimToken(uint amount) public {
-        address user = _msgSender();
-        address owner = owner();
-        _approve(owner, user, amount * 10**18);
-        transferFrom(owner, user, amount * 10**18);
-        emit Claim(owner, user, amount);
-    }
 }

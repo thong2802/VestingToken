@@ -75,8 +75,6 @@ contract MyVesting is ERC20, Ownable {
     // claim 
     // Investor claim token, tranfer token from vesting to address user address.
     function claim() public {
-        uint256 countYear  = (block.timestamp - startTime) / 10;
-        uint256 countMonth = (block.timestamp - startTime) % 10;
         address _sender = msg.sender;
         uint256 time = block.timestamp;
         uint256 tokenClaimable = 0;
@@ -97,6 +95,7 @@ contract MyVesting is ERC20, Ownable {
             totalPeriods = totalPeriods - ((time-startTime)/timePerPeriods);
             transfer(msg.sender,tokenClaimable);
             buyerInfo[msg.sender].tokenClaimed += tokenClaimable;
+       }
     }
 }
 
