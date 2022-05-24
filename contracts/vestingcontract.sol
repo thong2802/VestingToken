@@ -84,17 +84,17 @@ contract MyVesting is ERC20, Ownable {
         if(totalToken > 0) {
             require(token.balanceOf(address(this)) >= user.tokenCanClaim, "Not enough fund to claim");
         }
-        uint256 tokenClaimPerPeriod = buyerInfo[msg.sender].amount * 80 / 100 / totalPeriods;
+        uint256 tokenClaimPerPeriod = listUserVesting[msg.sender].amount * 80 / 100 / totalPeriods;
         if(time < firstRelease + cliff){
-                        tokenClaimable = buyerInfo[msg.sender].amount * 20 / 100;
+                        tokenClaimable = listUserVesting[msg.sender].amount * 20 / 100;
             transfer(msg.sender,tokenClaimable);
-            buyerInfo[msg.sender].tokenClaimed = tokenClaimable;
+            listUserVesting[msg.sender].tokenCanClaim = tokenClaimable;
         } else {
-            tokenClaimable += tokenClaimPerPeriod*((time-startTime)/timePerPeriods);
-            startTime = startTime + ((time-startTime)/timePerPeriods) * timePerPeriods;
-            totalPeriods = totalPeriods - ((time-startTime)/timePerPeriods);
+            tokenClaimable += tokenClaimPerPeriod*((time-startTime)/timePeriods);
+            startTime = startTime + ((time-startTime)/timePeriods) * timePeriods;
+            totalPeriods = totalPeriods - ((time-startTime)/timePeriods);
             transfer(msg.sender,tokenClaimable);
-            buyerInfo[msg.sender].tokenClaimed += tokenClaimable;
+            tokenClaimPerPeriod[msg.sender].tokenClaimed += tokenClaimable;
        }
     }
 }
